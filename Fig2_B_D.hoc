@@ -1,0 +1,105 @@
+// Geometry-induced features of current transfer in neuronal dendrites with tonically activated conductances
+// Sergey M. Korogod, Irina B. Kulagina
+// Biol. Cybern. 79, 231-240 (1998)
+
+objectvar JRGraph, IRGraph
+
+// define membrane mechanisms
+proc SetMembrane() {
+  strdef OutLine
+  OutLine = "Soma {insert PasSA}"
+  execute1(OutLine)
+  OutLine = "Axon {insert PasSA}"
+  execute1(OutLine)
+  OutLine = "Dendrite {insert PasS insert hh1}"
+  execute1(OutLine)
+} // SetMembrane()
+
+func CalcJm() { local Gm, Eq, Jm // uA/cm2
+  if (issection("Dendrite")) {
+    Gm = gs_PasS($1) + gl_hh1($1) + gna_hh1($1) + gk_hh1($1)
+    Eq = ((gs_PasS($1)/Gm)*es_PasS($1)) + ((gl_hh1($1)/Gm)*el_hh1($1)) + ((gna_hh1($1)/Gm)*ena($1)) + ((gk_hh1($1)/Gm)*ek($1))
+    Jm = (Gm * (v($1) - Eq)) * 1000
+  } else {
+    Jm = (g_PasSA($1) * (v($1) - erev_PasSA($1))) * 1000
+  }
+  return Jm
+} // CalcJm()
+
+// make graphics for Fig.2. B
+proc MakeJRGraph() {
+  strdef OutLine
+  JRGraph = new Graph(0)
+  JRGraph.xaxis()
+  JRGraph.yaxis()
+  RRGraph = new RangeVarPlot("CalcJm($1)")
+  OutLine = "Axon RRGraph.begin(0) Dendrite RRGraph.end(1)"
+  execute1(OutLine)
+  JRGraph.addobject(RRGraph, 1, 1, 1, 1)
+  JRGraph.size(-200, 800, -4, 6)
+  JRGraph.view(-200, -4.2, 1000, 10.2, 268, 200, 300.0, 215.0)
+  JRGraph.label(0.5, 1, "B", 2, 1, 0, 1, 1)
+  JRGraph.label(0.05, 1, "uA/cm2", 2, 1, 0, 1, 1)
+  JRGraph.label(0.9, 0.2, "um", 2, 1, 0, 1, 1)
+  JRGraph.yaxis(3)
+  JRGraph.xaxis(-200, 800, -4, 10, 0, 0, 1)
+  JRGraph.xaxis(-200, 800, 0, 0, 0, 0, 0)
+  JRGraph.yaxis(-4, 6, -200, 10, 0, 0, 1)
+  flush_list.append(JRGraph)
+  JRGraph.save_name("flush_list.")
+  objectvar RRGraph
+} // MakeJRGraph()
+
+func CalcI() { local Gm, Eq, Jm, Im // 0.01*pA/um
+  if (issection("Dendrite")) {
+    Gm = gs_PasS($1) + gl_hh1($1) + gna_hh1($1) + gk_hh1($1)
+    Eq = ((gs_PasS($1)/Gm)*es_PasS($1)) + ((gl_hh1($1)/Gm)*el_hh1($1)) + ((gna_hh1($1)/Gm)*ena($1)) + ((gk_hh1($1)/Gm)*ek($1))
+    Jm = (Gm * (v($1) - Eq)) * 1000
+  } else {
+    Jm = (g_PasSA($1) * (v($1) - erev_PasSA($1))) * 1000
+  }
+  Im = -(PI * diam($1) * Jm)
+  return Im
+} // CalcI()
+
+// make graphics for Fig.2. D
+proc MakeIRGraph() {
+  strdef OutLine
+  IRGraph = new Graph(0)
+  IRGraph.xaxis()
+  IRGraph.yaxis()
+  RRGraph = new RangeVarPlot("CalcI($1)")
+  OutLine = "Axon RRGraph.begin(0) Dendrite RRGraph.end(1)"
+  execute1(OutLine)
+  IRGraph.addobject(RRGraph, 1, 1, 1, 1)
+  IRGraph.size(-200, 800, -500, 100)
+  IRGraph.view(-220, -510, 1020, 610, 683, 200, 300.0, 215.0)
+  IRGraph.label(0.5, 1, "D", 2, 1, 0, 1, 1)
+  IRGraph.label(0.05, 1, "0.01 pA/um", 2, 1, 0, 1, 1)
+  IRGraph.label(0.9, 0.18, "um", 2, 1, 0, 1, 1)
+  IRGraph.yaxis(3)
+  IRGraph.xaxis(-200, 800, -500, 10, 0, 0, 1)
+  IRGraph.xaxis(-200, 800, 0, 0, 0, 0, 0)
+  IRGraph.yaxis(-500, 100, -200, 6, 0, 0, 1)
+  flush_list.append(IRGraph)
+  IRGraph.save_name("flush_list.")
+  objectvar RRGraph
+} // MakeIRGraph()
+
+proc Destroy() {
+  JRGraph.unmap()
+  IRGraph.unmap()
+} // Destroy()
+
+proc MainExec() {
+  GetModelTopology(1)
+  SetMembrane()
+  OutLine = "access Soma"
+  execute1(OutLine)
+  celcius = 6.3
+  tstop = 100
+  MakeJRGraph()
+  MakeIRGraph()
+} // MainExec()
+
+MainExec()

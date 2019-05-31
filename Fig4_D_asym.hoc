@@ -1,0 +1,70 @@
+// Geometry-induced features of current transfer in neuronal dendrites with tonically activated conductances
+// Sergey M. Korogod, Irina B. Kulagina
+// Biol. Cybern. 79, 231-240 (1998)
+
+objectvar TRGraph
+objectvar Stim
+
+// define membrane mechanisms
+proc SetMembrane() {
+  strdef OutLine
+  OutLine = "Soma {insert PasSA}"
+  execute1(OutLine)
+  for i=0, 2 {
+    sprint(OutLine, "Dendrite[%d] {insert PasD gs_PasD = 0.0}", i)
+    execute1(OutLine)
+  }
+} // SetMembrane()
+
+func CalcT() { local T
+  T = (v($1) - erev_PasD($1)) / 10
+  return T
+} // CalcT()
+
+// make graphics for Fig.4. D (asymmetric)
+proc MakeTRGraph() {
+  strdef OutLine
+  TRGraph = new Graph(0)
+  TRGraph.xaxis()
+  TRGraph.yaxis()
+  RRGraph = new RangeVarPlot("CalcT($1)")
+  OutLine = "Dendrite[0] RRGraph.begin(0) Dendrite[1] RRGraph.end(1)"
+  execute1(OutLine)
+  TRGraph.addobject(RRGraph, 1, 1, 1, 1)
+  RRGraph = new RangeVarPlot("CalcT($1)")
+  OutLine = "Dendrite[0] RRGraph.begin(0) Dendrite[2] RRGraph.end(1)"
+  execute1(OutLine)
+  TRGraph.addobject(RRGraph, 1, 1, 1, 1)
+  TRGraph.size(0, 800, 0.5, 1)
+  TRGraph.view(0, 0.5, 800, 0.5, 360, 269, 385, 250)
+  TRGraph.label(0.5, 1, "D", 2, 1, 0, 1, 1)
+  TRGraph.label(0.05, 1, "T(x)", 2, 1, 0, 1, 1)
+  TRGraph.label(0.9, 0.15, "um", 2, 1, 0, 1, 1)
+  flush_list.append(TRGraph)
+  TRGraph.save_name("flush_list.")
+  objectvar RRGraph
+} // MakeTRGraph()
+
+proc Destroy() {
+  objectvar Stim
+  TRGraph.unmap()
+} // Destroy()
+
+proc MainExec() {
+  GetModelTopology(5)
+  SetMembrane()
+  OutLine = "access Soma"
+  execute1(OutLine)
+  OutLine = "Soma Stim = new IClamp(0.75)"
+  execute1(OutLine)
+  OutLine = "Stim.del = 0"
+  execute1(OutLine)
+  OutLine = "Stim.dur = 50"
+  execute1(OutLine)
+  OutLine = "Stim.amp = 0.169"
+  execute1(OutLine)
+  tstop = 50
+  MakeTRGraph()
+} // MainExec()
+
+MainExec()

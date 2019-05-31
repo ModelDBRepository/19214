@@ -1,0 +1,245 @@
+strdef ArticleLabel1, ArticleLabel2, ArticleLabel3, ArticleLabel4
+ArticleLabel1 = "Geometry-induced features of current transfer in neuronal dendrites"
+ArticleLabel2 = "with tonically activated conductances"
+ArticleLabel3 = "Sergey M. Korogod, Irina B. Kulagina"
+ArticleLabel4 = "Biol. Cybern. 79, 231-240 (1998)"
+
+objref tempobj
+
+{
+  load_file("stdgui.hoc")
+  load_file("electrod.hoc")
+  load_file("showmech.hoc")
+  load_file("pointman.hoc")
+}
+
+proc MainPanel() {
+   xpanel("Article Results")
+   xvarlabel(ArticleLabel1)
+   xvarlabel(ArticleLabel2)
+   xvarlabel(ArticleLabel3)
+   xvarlabel(ArticleLabel4)
+   xlabel("")
+   xmenu("Fig.1.")
+     xbutton("Fig.1. A, C", "Main(1)")
+     xbutton("Fig.1. B, D", "Main(2)")
+   xmenu()
+   xmenu("Fig.2.", 1)
+     xbutton("Fig.2. A, C", "Main(3)")
+     xbutton("Fig.2. B, D", "Main(4)")
+   xmenu()
+   xmenu("Fig.3.", 1)
+     xmenu("Fig.3. A-C")
+       xbutton("Symmetric", "Main(5)")
+       xbutton("Asymmetric", "Main(6)")
+     xmenu()
+     xmenu("Fig.3. D")
+       xbutton("Symmetric", "Main(7)")
+       xbutton("Asymmetric", "Main(8)")
+     xmenu()
+     xmenu("Fig.3. E-G")
+       xbutton("Symmetric", "Main(9)")
+       xbutton("Asymmetric", "Main(10)")
+     xmenu()
+   xmenu()
+   xmenu("Fig.4.", 1)
+     xmenu("Fig.4. A-C")
+       xbutton("Symmetric", "Main(11)")
+       xbutton("Asymmetric", "Main(12)")
+     xmenu()
+     xmenu("Fig.4. D")
+       xbutton("Symmetric", "Main(13)")
+       xbutton("Asymmetric", "Main(14)")
+     xmenu()
+     xmenu("Fig.4. E-G")
+       xbutton("Symmetric", "Main(15)")
+       xbutton("Asymmetric", "Main(16)")
+     xmenu()
+   xmenu()
+   xmenu("Fig.5.", 1)
+     xmenu("Fig.5. A-C")
+       xbutton("Symmetric", "Main(17)")
+       xbutton("Asymmetric", "Main(18)")
+     xmenu()
+     xmenu("Fig.5. D")
+       xbutton("Symmetric", "Main(19)")
+       xbutton("Asymmetric", "Main(20)")
+     xmenu()
+     xmenu("Fig.5. E-G")
+       xbutton("Symmetric", "Main(21)")
+       xbutton("Asymmetric", "Main(22)")
+     xmenu()
+   xmenu()
+   xlabel("")
+   xpanel(410, 0)
+} // MainPanel()
+
+objectvar RRGraph
+
+// creation of the model
+// parameter - number of the model
+proc GetModelTopology() {
+  strdef OutLine
+  OutLine = "create Soma"
+  execute1(OutLine)
+  OutLine = "access Soma"
+  execute1(OutLine)
+  OutLine = "Soma { nseg=2 L=20 diam=22.5 }"
+  execute1(OutLine)
+  if ($1 == 1) {
+    OutLine = "create Axon"
+    execute1(OutLine)
+    OutLine = "Axon { nseg=20 L=200 diam=3 }  "
+    execute1(OutLine)
+    OutLine = "create Dendrite"
+    execute1(OutLine)
+    OutLine = "Dendrite { nseg=78 L=780 diam=3 }"
+    execute1(OutLine)
+    OutLine = "connect Axon(1),Soma(0)"
+    execute1(OutLine)
+    OutLine = "connect Dendrite(0),Soma(1)"
+    execute1(OutLine)
+  } else {
+    OutLine = "create Dendrite[3]"
+    execute1(OutLine)
+    if ($1 == 2) {
+      OutLine = "Dendrite[0] { nseg=39 L=390 diam=5 }"
+      execute1(OutLine)
+      OutLine = "Dendrite[1] { nseg=39 L=390 diam=5 }"
+      execute1(OutLine)
+      OutLine = "Dendrite[2] { nseg=39 L=390 diam=5 }"
+      execute1(OutLine)
+    } else if ($1 == 3) {
+      OutLine = "Dendrite[0] { nseg=39 L=390 diam=5 }"
+      execute1(OutLine)
+      OutLine = "Dendrite[1] { nseg=39 L=390 diam=5 }"
+      execute1(OutLine)
+      OutLine = "Dendrite[2] { nseg=19 L=195 diam=5 }"
+      execute1(OutLine)
+    } else if ($1 == 4) {
+      OutLine = "Dendrite[0] { nseg=39 L=390 diam=5 }"
+      execute1(OutLine)
+      OutLine = "Dendrite[1] { nseg=39 L=390 diam=3.1498 }"
+      execute1(OutLine)
+      OutLine = "Dendrite[2] { nseg=39 L=390 diam=3.1498 }"
+      execute1(OutLine)
+    } else if ($1 == 5) {
+      OutLine = "Dendrite[0] { nseg=39 L=390 diam=5 }"
+      execute1(OutLine)
+      OutLine = "Dendrite[1] { nseg=39 L=390 diam=3.1498 }"
+      execute1(OutLine)
+      OutLine = "Dendrite[2] { nseg=19 L=195 diam=3.1498 }"
+      execute1(OutLine)
+    } else if ($1 == 6) {
+      OutLine = "Dendrite[0] { nseg=39 L=390 diam=5 }"
+      execute1(OutLine)
+      OutLine = "Dendrite[1] { nseg=39 L=390 diam=1.9844 }"
+      execute1(OutLine)
+      OutLine = "Dendrite[2] { nseg=39 L=390 diam=1.9844 }"
+      execute1(OutLine)
+    } else if ($1 == 7) {
+      OutLine = "Dendrite[0] { nseg=39 L=390 diam=5 }"
+      execute1(OutLine)
+      OutLine = "Dendrite[1] { nseg=39 L=390 diam=1.9844 }"
+      execute1(OutLine)
+      OutLine = "Dendrite[2] { nseg=19 L=195 diam=1.9844 }"
+      execute1(OutLine)
+    }
+    OutLine = "connect Dendrite[0](0),Soma(1)"
+    execute1(OutLine)
+    OutLine = "connect Dendrite[1](0),Dendrite[0](1)"
+    execute1(OutLine)
+    OutLine = "connect Dendrite[2](0),Dendrite[0](1)"
+    execute1(OutLine)
+  }
+  define_shape()
+} // GetModelTopology()
+
+proc Destroy(){}
+
+proc CommonDestroy() { local i
+   objectvar graphList[n_graph_lists], graphItem, flush_list, fast_flush_list
+   for i=0,n_graph_lists-1 graphList[i] = new List(1)
+   flush_list = new List(1)
+   fast_flush_list = new List(1)
+
+   tempobj = new List("Inserter")
+   while (tempobj.count()) {
+      tempobj.object(0).v1.unmap()
+   }
+   tempobj = new List("Electrode")
+   while (tempobj.count()) {
+      tempobj.object(0).v1.unmap()
+   }
+   tempobj = new List("PointProcessManager")
+   while (tempobj.count()) {
+      tempobj.object(0).v1.unmap()
+   }
+   tempobj = new List("ShowMechanism")
+   while (tempobj.count()) {
+      tempobj.object(0).v1.unmap()
+   }
+} // CommonDestroy()
+
+proc Main() {
+
+  Destroy()
+  CommonDestroy()
+
+  objectvar save_window_[1], rvp_[1], scene_vector_[1], ocbox_[1]
+  objectvar ocbox_list_[1], scene_list_[1], scene_[1]
+
+  doEvents()
+
+  forall delete_section()
+  if ($1 == 1) {
+    xopen("Fig1_A_C.hoc")
+  } else if ($1 == 2) {
+    xopen("Fig1_B_D.hoc")
+  } else if ($1 == 3) {
+    xopen("Fig2_A_C.hoc")
+  } else if ($1 == 4) {
+    xopen("Fig2_B_D.hoc")
+  } else if ($1 == 5) {
+    xopen("Fig3_A_C_sym.hoc")
+  } else if ($1 == 6) {
+    xopen("Fig3_A_C_asym.hoc")
+  } else if ($1 == 7) {
+    xopen("Fig3_D_sym.hoc")
+  } else if ($1 == 8) {
+    xopen("Fig3_D_asym.hoc")
+  } else if ($1 == 9) {
+    xopen("Fig3_E_G_sym.hoc")
+  } else if ($1 == 10) {
+    xopen("Fig3_E_G_asym.hoc")
+  } else if ($1 == 11) {
+    xopen("Fig4_A_C_sym.hoc")
+  } else if ($1 == 12) {
+    xopen("Fig4_A_C_asym.hoc")
+  } else if ($1 == 13) {
+    xopen("Fig4_D_sym.hoc")
+  } else if ($1 == 14) {
+    xopen("Fig4_D_asym.hoc")
+  } else if ($1 == 15) {
+    xopen("Fig4_E_G_sym.hoc")
+  } else if ($1 == 16) {
+    xopen("Fig4_E_G_asym.hoc")
+  } else if ($1 == 17) {
+    xopen("Fig5_A_C_sym.hoc")
+  } else if ($1 == 18) {
+    xopen("Fig5_A_C_asym.hoc")
+  } else if ($1 == 19) {
+    xopen("Fig5_D_sym.hoc")
+  } else if ($1 == 20) {
+    xopen("Fig5_D_asym.hoc")
+  } else if ($1 == 21) {
+    xopen("Fig5_E_G_sym.hoc")
+  } else if ($1 == 22) {
+    xopen("Fig5_E_G_asym.hoc")
+  }
+  forall Ra=100
+  finitialize()
+} // Main()
+
+nrncontrolmenu()
+MainPanel()
