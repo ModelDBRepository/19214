@@ -17,11 +17,11 @@ The models illustrate the biophysical basis for a universal estimate of effectiv
 
 Passive axon was excluded from the models with branching dendrites (not indicated in the paper).
 
-For further details see the paper or contact the authors at:
-Laboratory of Biophysics and Bioelectronics,
-Dniepropetrovsk National University,
-49050 Dniepropetrovsk, Ukraine
-Phone/FAX: +38056 776 91 24
+For further details see the paper or contact the authors at:  
+Laboratory of Biophysics and Bioelectronics,  
+Dniepropetrovsk National University,  
+49050 Dniepropetrovsk, Ukraine  
+Phone/FAX: +38056 776 91 24  
 E-mails: korogod@ff.dsu.dp.ua; kulagina@ff.dsu.dp.ua; valery@ff.dsu.dp.ua
 
 ---
